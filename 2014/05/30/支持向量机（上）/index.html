@@ -1,0 +1,473 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>机器学习7--支持向量机（上） | DanielJyc&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="DanielJyc">
+    
+    <meta name="description" content="">
+    
+    
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="DanielJycheng" />
+    <meta name="twitter:title" content="机器学习7--支持向量机（上） | DanielJyc&#39;s blog" />
+      
+    
+    
+    <link rel="alternative" href="/atom.xml" title="DanielJyc&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="DanielJyc&#39;s blog" title="DanielJyc&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="DanielJyc&#39;s blog">DanielJyc&#39;s blog</a></h1>
+				<h2 class="blog-motto">Done is better than perfect.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search/index.html" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" autocomplete="off" name="q" maxlength="20" placeholder="Search" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/05/30/支持向量机（上）/" title="机器学习7--支持向量机（上）" itemprop="url">机器学习7--支持向量机（上）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="http://danieljyc.github.io//about" title="DanielJyc" target="_blank" itemprop="author">DanielJyc</a>
+		
+  <p class="article-time">
+    <time datetime="2014-05-30T04:37:35.000Z" itemprop="datePublished">发表于5月 30 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归和支持向量机关系"><span class="toc-number">1.</span> <span class="toc-text">逻辑回归和支持向量机关系</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#两者关系"><span class="toc-number">1.1.</span> <span class="toc-text">两者关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#形式化表示LR—&gt;SVM表示"><span class="toc-number">1.2.</span> <span class="toc-text">形式化表示LR—&gt;SVM表示</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#函数间隔和几何间隔"><span class="toc-number">2.</span> <span class="toc-text">函数间隔和几何间隔</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最优化间隔分类器"><span class="toc-number">3.</span> <span class="toc-text">最优化间隔分类器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拉格朗日对偶"><span class="toc-number">4.</span> <span class="toc-text">拉格朗日对偶</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#拉格朗日乘数法"><span class="toc-number">4.1.</span> <span class="toc-text">拉格朗日乘数法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#广义拉格朗日：拉格朗日+不等式"><span class="toc-number">4.2.</span> <span class="toc-text">广义拉格朗日：拉格朗日+不等式</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#最优间隔分类器及拉格朗日对偶_在SVM中的应用"><span class="toc-number">5.</span> <span class="toc-text">最优间隔分类器及拉格朗日对偶 在SVM中的应用</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SVM的优化问题"><span class="toc-number">5.1.</span> <span class="toc-text">SVM的优化问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#求解最优化问题"><span class="toc-number">5.2.</span> <span class="toc-text">求解最优化问题</span></a></li></ol>
+		
+		</div>
+		
+		<p><a id="more"></a></p>
+<blockquote>
+<ul>
+<li>本节：从逻辑回归引出支持向量机—&gt;定义函数间隔和几何间隔—&gt;最优间隔分类器（通过最大化间隔，得到最优）—&gt;引出拉格朗日对偶（作用：通过对偶将算法变得更高效；处理高维）—&gt;将对偶用到最优间隔分类器</li>
+<li>本节都是针对很明显的分类’good’，如下图。</li>
+</ul>
+</blockquote>
+<h2 id="逻辑回归和支持向量机关系">逻辑回归和支持向量机关系</h2>
+<h3 id="两者关系">两者关系</h3>
+<p>两者都可以实现分类。LR考虑全局（几经远离的点，通过调节中间线使其更远）；SVM考虑局部（不关心已经确定远离的点）。<br><img src="/img/1401413075318.png" alt=""></p>
+<h3 id="形式化表示LR—&gt;SVM表示">形式化表示LR—&gt;SVM表示</h3>
+<p>$\theta$ 变为w和b。0、1变为0、-1。<br><img src="/img/1401413701601.png" alt=""><br><img src="/img/1401413727942.png" alt=""></p>
+<h2 id="函数间隔和几何间隔">函数间隔和几何间隔</h2>
+<p>定义函数间隔—&gt;通过归一化，再定义几何间隔—&gt;两者关系。几何间隔的意义：点到超平面的距离。</p>
+<ul>
+<li>函数间隔<br>一个训练样本：<img src="/img/1401413990360.png" alt=""><br>所有训练样本：<img src="/img/1401414030946.png" alt=""></li>
+<li>几何间隔<br>一个训练样本：<img src="/img/1401414126627.png" alt=""><br>所有训练样本：<img src="/img/1401414136951.png" alt=""></li>
+<li>两者关系<br>当<img src="/img/1401414173123.png" alt="">时，两者等价。</li>
+</ul>
+<h2 id="最优化间隔分类器">最优化间隔分类器</h2>
+<p>几何间隔的优化（非凸规划：集合非凸集）—&gt; 函数间隔的优化（非凸规划：最大化函数非凸函数）—&gt; 改写后的规划（凸规划）</p>
+<ul>
+<li>几何间隔的优化<br><img src="/img/1401414627849.png" alt=""></li>
+<li>函数间隔的优化<br><img src="/img/1401414643134.png" alt=""></li>
+<li>改写后的规划：令<img src="/img/1401414739683.png" alt="">，这样做的意义：将全局的函数间隔定义为1，即将离超平面最近的点的距离定义为<img src="/img/1401414848436.png" alt="">，<img src="/img/1401414904554.png" alt="">：<br><img src="/img/1401414657876.png" alt=""></li>
+</ul>
+<h2 id="拉格朗日对偶">拉格朗日对偶</h2>
+<h3 id="拉格朗日乘数法">拉格朗日乘数法</h3>
+<ul>
+<li>1.最优化问题：<br><img src="/img/1401415019283.png" alt=""></li>
+<li>2.拉格朗日公式（拉格朗日算子）：<br><img src="/img/1401415070328.png" alt=""><br>其中，l为约束的个数（样本数目），<img src="/img/1401415151617.png" alt="">为拉格朗日乘数。</li>
+<li>3.通过求偏导，解得参数<img src="/img/1401415247674.png" alt=""><br><img src="/img/1401415259408.png" alt=""></li>
+</ul>
+<h3 id="广义拉格朗日：拉格朗日+不等式">广义拉格朗日：拉格朗日+不等式</h3>
+<ul>
+<li>1.原始<strong>primal</strong>的最优化问题：<br><img src="/img/1401415324361.png" alt=""></li>
+<li>2.拉格朗日公式（拉格朗日算子）：<br><img src="/img/1401415353328.png" alt=""><br>其中，<img src="/img/1401415683097.png" alt="">为拉格朗日乘数。</li>
+<li>3.进一步得到<br><img src="/img/1401415657129.png" alt=""><br>即：<br><img src="/img/1401415727047.png" alt=""></li>
+<li>4.从而将问题转化（p:primal）：<img src="/img/1401415781557.png" alt=""><br><img src="/img/1401416121113.png" alt=""></li>
+<li>5.定义对偶问题（D:dual）：<br>定义：<img src="/img/1401415977743.png" alt="">，则：<br><img src="/img/1401416100848.png" alt=""></li>
+<li>6.得到不等式关系：<br><img src="/img/1401416160802.png" alt=""></li>
+<li><strong>7.上面两者等价<img src="/img/1401416215315.png" alt="">的条件，KKT条件：</strong><br><img src="/img/1401416417346.png" alt=""><br><img src="/img/1401416445523.png" alt="">，即<strong>KKT条件</strong>：<br><img src="/img/1401416477011.png" alt=""><blockquote>
+<p>注:<img src="/img/1401416691302.png" alt=""></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="最优间隔分类器及拉格朗日对偶_在SVM中的应用">最优间隔分类器及拉格朗日对偶 在SVM中的应用</h2>
+<p><strong>优化问题主要是求解w；b仅仅是一个参数。</strong></p>
+<h3 id="SVM的优化问题">SVM的优化问题</h3>
+<ul>
+<li>1、优化问题<br><img src="/img/1401417232731.png" alt=""><br><img src="/img/1401417252656.png" alt=""></li>
+<li>2、拉格朗日算子<br><img src="/img/1401417819167.png" alt=""></li>
+<li>3、没有等式约束，只有不等式。下图中虚线上的三个点称为<strong>支持向量</strong>（支持向量机中的支持向量）。三点的函数间隔为1。<img src="/img/1401417445083.png" alt="">。<br><img src="/img/1401417745474.png" alt=""><h3 id="求解最优化问题">求解最优化问题</h3>
+</li>
+<li>1、对偶问题<br><img src="/img/1401418081844.png" alt=""></li>
+<li>2、求解极小化问题：对w求偏导<br><img src="/img/1401418177089.png" alt=""><br><img src="/img/1401418208766.png" alt=""></li>
+<li>3、求解极小化问题：对w求偏导<br><img src="/img/1401418251955.png" alt=""></li>
+<li>4、将w，b带入L中<br><img src="/img/1401418402946.png" alt=""><br><strong>注：</strong>该函数是关于<img src="/img/1401418527912.png" alt="">的函数。通过极大化，来求解得到该值。然后，再得到w和b。</li>
+<li>5、求解极大化问题：<img src="/img/1401418707592.png" alt=""><br>凸规划：<br><img src="/img/1401418685006.png" alt=""></li>
+<li>6、求解<blockquote>
+<p>求解得到<img src="/img/1401418527912.png" alt="">；<br>根据<img src="/img/1401418208766.png" alt="">得到w；<br>根据<img src="/img/1401418939304.png" alt="">得到b。<br>其中，b的意义：离超平面最近的正的函数间隔要等于离超平面最近的负的函数间隔。</p>
+</blockquote>
+</li>
+<li>7、进行预测<br>如下公式所示:有了$\alpha_i$，我们不需要求出w，只需将新来的样本和训练数据中的所有样本做内积和即可。那有人会说，与前面所有的样本都做运算是不是太耗时了？其实不然，我们从KKT条件中得到，只有支持向量的$\alpha_i$&gt; 0，其他情况$\alpha_i$= 0。<br><img src="/img/1401419097015.png" alt=""></li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/ML/">ML</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"pig2p## e.g. 2176287895 Your weibo id,It will be used in share button."},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+1394528987915526" charset="utf-8"></script>      
+
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/06/05/机器学习8--支持向量机（下）/" title="机器学习8--支持向量机（下）">
+  <strong>上一篇：</strong><br/>
+  <span>
+  机器学习8--支持向量机（下）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/05/29/机器学习5--生成学习算法（高斯、nb）/"  title="机器学习5--生成学习算法（高斯、NB）">
+ <strong>下一篇：</strong><br/> 
+ <span>机器学习5--生成学习算法（高斯、NB）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归和支持向量机关系"><span class="toc-number">1.</span> <span class="toc-text">逻辑回归和支持向量机关系</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#两者关系"><span class="toc-number">1.1.</span> <span class="toc-text">两者关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#形式化表示LR—&gt;SVM表示"><span class="toc-number">1.2.</span> <span class="toc-text">形式化表示LR—&gt;SVM表示</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#函数间隔和几何间隔"><span class="toc-number">2.</span> <span class="toc-text">函数间隔和几何间隔</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最优化间隔分类器"><span class="toc-number">3.</span> <span class="toc-text">最优化间隔分类器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拉格朗日对偶"><span class="toc-number">4.</span> <span class="toc-text">拉格朗日对偶</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#拉格朗日乘数法"><span class="toc-number">4.1.</span> <span class="toc-text">拉格朗日乘数法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#广义拉格朗日：拉格朗日+不等式"><span class="toc-number">4.2.</span> <span class="toc-text">广义拉格朗日：拉格朗日+不等式</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#最优间隔分类器及拉格朗日对偶_在SVM中的应用"><span class="toc-number">5.</span> <span class="toc-text">最优间隔分类器及拉格朗日对偶 在SVM中的应用</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SVM的优化问题"><span class="toc-number">5.1.</span> <span class="toc-text">SVM的优化问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#求解最优化问题"><span class="toc-number">5.2.</span> <span class="toc-text">求解最优化问题</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/ML/" title="ML">ML<sup>12</sup></a></li>
+		
+			<li><a href="/tags/阿里巴巴大数据竞赛/" title="阿里巴巴大数据竞赛">阿里巴巴大数据竞赛<sup>1</sup></a></li>
+		
+			<li><a href="/tags/学习相关/" title="学习相关">学习相关<sup>1</sup></a></li>
+		
+			<li><a href="/tags/找工作经历/" title="找工作经历">找工作经历<sup>1</sup></a></li>
+		
+			<li><a href="/tags/LaTex/" title="LaTex">LaTex<sup>1</sup></a></li>
+		
+			<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://zipperary.com/" target="_blank" title="zippera">Zippera's Blog</a></li>
+      <li><a href="http://brotherb.info/" target="_blank" title="brotherb">Spike's Blog</a></li>
+      <li><a href="http://wuchong.me//" target="_blank" title="JiangTao">Jark's Blog</a></li>
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		
+		<a href="http://weibo.com/pig2p" target="_blank"><div class="author"></div></a>
+		
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello, I&#39;m DanielJyc <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/pig2p" target="_blank" class="icon-weibo" title="weibo"></a>
+		
+		
+		<a href="https://github.com/DanielJyc" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		<a href="http://stackoverflow.com/users/3159782" target="_blank" class="icon-stack-overflow" title="stackoverflow"></a>
+		
+		
+		<a href="https://twitter.com/DanielJycheng" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		<a href="https://www.facebook.com/https://facebook.com/100003504169135" target="_blank" class="icon-facebook" title="facebook"></a>
+		
+		
+		<a href="https://www.douban.com/people/pig2pig" target="_blank" class="icon-douban" title="豆瓣"></a>
+		
+		
+		
+		<a href="mailto:496830205@qq.com## e.g. wuchong1014@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Pacman">Jacman</a> © 2014 
+		
+		<a href="http://danieljyc.github.io//about" target="_blank" title="DanielJyc">DanielJyc</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"danieljyc"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-51069455-1', 'auto');  
+ga('send', 'pageview');
+</script>
+
+
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+<script type="text/x-mathjax-config"> 
+MathJax.Hub.Config({ 
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} 
+}); 
+</script>
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </body>
+</html>

@@ -1,0 +1,477 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>机器学习11-1--贝叶斯统计和规则化 | DanielJyc&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="DanielJyc">
+    
+    <meta name="description" content="机器学习11-1—贝叶斯统计和规则化
+贝叶斯统计和规则化（ Bayesian  statistics  and regularization）
+
+贝叶斯统计和规则化的目的：找更好的估计方法来减少过度拟合情况的发生。
+回顾,总结：
+
+线性回归中使用的估计方法是最小二乘法
+logistic 回归是条件概">
+    
+    
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="DanielJycheng" />
+    <meta name="twitter:title" content="机器学习11-1--贝叶斯统计和规则化 | DanielJyc&#39;s blog" />
+      
+    
+    
+    <link rel="alternative" href="/atom.xml" title="DanielJyc&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="DanielJyc&#39;s blog" title="DanielJyc&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="DanielJyc&#39;s blog">DanielJyc&#39;s blog</a></h1>
+				<h2 class="blog-motto">Done is better than perfect.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search/index.html" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" autocomplete="off" name="q" maxlength="20" placeholder="Search" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/06/05/机器学习11-1--贝叶斯统计和规则化/" title="机器学习11-1--贝叶斯统计和规则化" itemprop="url">机器学习11-1--贝叶斯统计和规则化</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="http://danieljyc.github.io//about" title="DanielJyc" target="_blank" itemprop="author">DanielJyc</a>
+		
+  <p class="article-time">
+    <time datetime="2014-06-05T08:57:33.000Z" itemprop="datePublished">发表于6月 5 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习11-1—贝叶斯统计和规则化"><span class="toc-number">1.</span> <span class="toc-text">机器学习11-1—贝叶斯统计和规则化</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#贝叶斯统计和规则化（_Bayesian_statistics_and_regularization）"><span class="toc-number">1.1.</span> <span class="toc-text">贝叶斯统计和规则化（ Bayesian  statistics  and regularization）</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#频率学派和贝叶斯学派"><span class="toc-number">1.1.1.</span> <span class="toc-text">频率学派和贝叶斯学派</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频率学派（frequentist_statistics）"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">频率学派（frequentist  statistics）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#贝叶斯学派（Bayesian）"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">贝叶斯学派（Bayesian）</span></a></li></ol></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#L1和L2规则化？？？？？？？"><span class="toc-number">1.2.</span> <span class="toc-text">L1和L2规则化？？？？？？？</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#贝叶斯xi回归L1"><span class="toc-number">1.2.1.</span> <span class="toc-text">L1</span></a></li></ol>
+		
+		</div>
+		
+		<h1 id="机器学习11-1—贝叶斯统计和规则化">机器学习11-1—贝叶斯统计和规则化</h1>
+<h2 id="贝叶斯统计和规则化（_Bayesian_statistics_and_regularization）">贝叶斯统计和规则化（ Bayesian  statistics  and regularization）</h2>
+<ul>
+<li>贝叶斯统计和规则化的目的：找更好的估计方法来减少过度拟合情况的发生。</li>
+<li>回顾,总结：<blockquote>
+<ol>
+<li><strong>线性回归中使用的估计方法是最小二乘法</strong></li>
+<li><strong>logistic 回归是条件概率的最大似然估计</strong></li>
+<li><strong>朴素贝叶斯是联合概率的最大似然估计</strong></li>
+<li><strong>SVM 是二次规划。</strong></li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h3 id="频率学派和贝叶斯学派">频率学派和贝叶斯学派</h3>
+<p><strong>看待 $\theta$   的角度不同</strong></p>
+<h4 id="频率学派（frequentist_statistics）">频率学派（frequentist  statistics）</h4>
+<p>认为θ不是随机变量，只是一个未知的常量，因此我们没有把<img src="/img/1401942615337.png" alt=""></p>
+<h4 id="贝叶斯学派（Bayesian）">贝叶斯学派（Bayesian）</h4>
+<p>认为θ是随机变量。<br><strong>步骤：</strong><br>1、先验概率p(θ)：不同的θ值就有不同的概率。训练集：<img src="/img/1401942831083.png" alt="">。则：θ的后验概率：</p>
+<blockquote>
+<p><img src="/img/1401942868297.png" alt=""><br>分母有误：<img src="/img/1401943041380.png" alt=""></p>
+</blockquote>
+<p>2、在θ是随机变量的情况下，如果新来一个样例特征为 x，那么为了预测 y。我们可以使用下面的公式：<br><img src="/img/1401943115094.png" alt=""></p>
+<blockquote>
+<p>注：<img src="/img/1401943217200.png" alt="">在不同的模型下计算方式不同。比如在贝叶斯 logistic 回归中： <img src="/img/1401943264910.png" alt=""><br>其中，<img src="/img/1401943296618.png" alt=""></p>
+</blockquote>
+<p>3、进而得到期望：</p>
+<blockquote>
+<p>　<img src="/img/1401943429814.png" alt=""></p>
+</blockquote>
+<p>4、<strong>注：</strong></p>
+<blockquote>
+<ol>
+<li>这次求解p(y|x, S)与之前的方式不同，以前是先求θ，然后直接预测，这次是对所有可<br>能的θ作积分。</li>
+<li>贝叶斯估计将θ视为随机变量，θ的值满足一定的分布，不是固定值，我们无法通过计算获得其值，只能在预测时计算积分。</li>
+<li>由于上述问题的存在；显然，后验概率p(θ|S)很难计算。为了解决这个问题，我们需要改变思路。看p(θ|S)公式中的分母，分母其实就是 P(S)，而我们就是要让P(S)在各种参数的影响下能够最大（这里只有参数θ） 。 因此我们<strong>只需求出随机变量θ中最可能的取值</strong>，这样求出θ后，可将θ视为固定值，那么预测时就不用积分了，而是直接像最大似然估计中求出θ后一样进行预测，这样就变成了点估计。这种方法称为<strong>MAP 最大后验概率估计（Maximum a posteriori）</strong>方法。</li>
+</ol>
+</blockquote>
+<p>5、<strong>MAP 最大后验概率估计（Maximum a posteriori）</strong>方法，Θ估计公式为</p>
+<blockquote>
+<p> <img src="/img/1401944579808.png" alt=""></p>
+</blockquote>
+<p>6、进行预测：</p>
+<blockquote>
+<p>$h<em>{\hat{\theta}</em>{MAP}}(X)=\hat{\theta}_{MAP}^{T}X$</p>
+</blockquote>
+<p>7、总结与应用：</p>
+<blockquote>
+<ol>
+<li>与最大似然估计对比发现，MAP 只是将θ移进了条件概率中，并且多了一项p(θ)。</li>
+<li>一般情况下我们认为<img src="/img/1401945205238.png" alt="">。</li>
+<li>贝叶斯最大后验概率估计相对于最大似然估计来说更容易克服过度拟合问题。原因：<blockquote>
+<p>a. 整个公式由两项组成，极大化<img src="/img/1401945277536.png" alt="">时，不代表此时p(θ)也能最大化。相反，θ是多值高斯分布，极大化时， p(θ)概率反而可能比较小。要达到最大化需要在两者之间达到平衡，也就靠近了偏差和方差线的交叉点。<br>b.  这个跟机器翻译里的噪声信道模型比较类似，由两个概率决定比有一个概率决定更靠谱。作者声称利用贝叶斯 logistic 回归（使用θMAP的 logistic 回归）应用于文本分类时，即使特征个数 n 远远大于样例个数 m，也很有效。 </p>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+<h2 id="L1和L2规则化？？？？？？？">L1和L2规则化？？？？？？？</h2>
+<p><strong>老师上课没有讲到该部分，看了一下Pro Set3。也不是很理解。</strong>先引出正则化参数的损失函数，然后介绍了怎样最小化损失函数（过程不是很理解）。对于L1和L2在ODPS的XLab中有提到。后面，再仔细研究研究。对于L2：将后面一项改为2范数。</p>
+<h3 id="贝叶斯xi回归L1"><strong>贝叶斯xi回归</strong>L1</h3>
+<p><img src="/img/1401946026172.png" alt=""></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/ML/">ML</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"pig2p## e.g. 2176287895 Your weibo id,It will be used in share button."},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+1394528987915526" charset="utf-8"></script>      
+
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/06/05/机器学习11-2--怎样用机器学习ml解决问题和在线学习/" title="机器学习11-2--怎样用机器学习ML解决问题和在线学习">
+  <strong>上一篇：</strong><br/>
+  <span>
+  机器学习11-2--怎样用机器学习ML解决问题和在线学习</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/06/05/机器学习10--学习理论的基础知识/"  title="机器学习10--学习理论的基础知识">
+ <strong>下一篇：</strong><br/> 
+ <span>机器学习10--学习理论的基础知识
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习11-1—贝叶斯统计和规则化"><span class="toc-number">1.</span> <span class="toc-text">机器学习11-1—贝叶斯统计和规则化</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#贝叶斯统计和规则化（_Bayesian_statistics_and_regularization）"><span class="toc-number">1.1.</span> <span class="toc-text">贝叶斯统计和规则化（ Bayesian  statistics  and regularization）</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#频率学派和贝叶斯学派"><span class="toc-number">1.1.1.</span> <span class="toc-text">频率学派和贝叶斯学派</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频率学派（frequentist_statistics）"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">频率学派（frequentist  statistics）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#贝叶斯学派（Bayesian）"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">贝叶斯学派（Bayesian）</span></a></li></ol></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#L1和L2规则化？？？？？？？"><span class="toc-number">1.2.</span> <span class="toc-text">L1和L2规则化？？？？？？？</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#贝叶斯xi回归L1"><span class="toc-number">1.2.1.</span> <span class="toc-text">L1</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/ML/" title="ML">ML<sup>12</sup></a></li>
+		
+			<li><a href="/tags/阿里巴巴大数据竞赛/" title="阿里巴巴大数据竞赛">阿里巴巴大数据竞赛<sup>1</sup></a></li>
+		
+			<li><a href="/tags/学习相关/" title="学习相关">学习相关<sup>1</sup></a></li>
+		
+			<li><a href="/tags/找工作经历/" title="找工作经历">找工作经历<sup>1</sup></a></li>
+		
+			<li><a href="/tags/LaTex/" title="LaTex">LaTex<sup>1</sup></a></li>
+		
+			<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://zipperary.com/" target="_blank" title="zippera">Zippera's Blog</a></li>
+      <li><a href="http://brotherb.info/" target="_blank" title="brotherb">Spike's Blog</a></li>
+      <li><a href="http://wuchong.me//" target="_blank" title="JiangTao">Jark's Blog</a></li>
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		
+		<a href="http://weibo.com/pig2p" target="_blank"><div class="author"></div></a>
+		
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello, I&#39;m DanielJyc <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/pig2p" target="_blank" class="icon-weibo" title="weibo"></a>
+		
+		
+		<a href="https://github.com/DanielJyc" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		<a href="http://stackoverflow.com/users/3159782" target="_blank" class="icon-stack-overflow" title="stackoverflow"></a>
+		
+		
+		<a href="https://twitter.com/DanielJycheng" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		<a href="https://www.facebook.com/https://facebook.com/100003504169135" target="_blank" class="icon-facebook" title="facebook"></a>
+		
+		
+		<a href="https://www.douban.com/people/pig2pig" target="_blank" class="icon-douban" title="豆瓣"></a>
+		
+		
+		
+		<a href="mailto:496830205@qq.com## e.g. wuchong1014@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Pacman">Jacman</a> © 2014 
+		
+		<a href="http://danieljyc.github.io//about" target="_blank" title="DanielJyc">DanielJyc</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"danieljyc"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-51069455-1', 'auto');  
+ga('send', 'pageview');
+</script>
+
+
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+<script type="text/x-mathjax-config"> 
+MathJax.Hub.Config({ 
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} 
+}); 
+</script>
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </body>
+</html>
