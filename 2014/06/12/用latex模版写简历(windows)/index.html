@@ -4,18 +4,26 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>LaTex入门 | DanielJyc&#39;s blog</title>
+    <title>用LaTex模版写简历(Windows) | DanielJyc&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="DanielJyc">
     
-    <meta name="description" content="[TOC]">
+    <meta name="description" content="用LaTex模版写简历(Windows)
+安装环境
+
+安装软件：下载install-tl.exe，进行安装。详细参考：在 MS Windows 作業系統平台裝設 TeX Live 2011
+安装字体：下载这四种字体（点击下载），并安装（点击查看安装方式） 。
+
+写简历
+
+主要参考“制作中英文简历的X">
     
     
     
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="DanielJycheng" />
-    <meta name="twitter:title" content="LaTex入门 | DanielJyc&#39;s blog" />
+    <meta name="twitter:title" content="用LaTex模版写简历(Windows) | DanielJyc&#39;s blog" />
       
     
     
@@ -73,14 +81,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/05/19/latex入门/" title="LaTex入门" itemprop="url">LaTex入门</a>
+      <a href="/2014/06/12/用latex模版写简历(windows)/" title="用LaTex模版写简历(Windows)" itemprop="url">用LaTex模版写简历(Windows)</a>
   </h1>
   <p class="article-author">By
        
 		<a href="http://danieljyc.github.io//about" title="DanielJyc" target="_blank" itemprop="author">DanielJyc</a>
 		
   <p class="article-time">
-    <time datetime="2014-05-18T16:09:33.000Z" itemprop="datePublished">发表于5月 19 2014</time>
+    <time datetime="2014-06-12T12:59:15.000Z" itemprop="datePublished">发表于6月 12 2014</time>
     
   </p>
 </header>
@@ -90,199 +98,28 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-_安装"><span class="toc-number">1.</span> <span class="toc-text">安装</a></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-_简单语法"><span class="toc-number">2.</span> <span class="toc-text">2. 简单语法</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#最简单的Hello_world-"><span class="toc-number">2.1.</span> <span class="toc-text">最简单的Hello world.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加入中文，标题，作者和注释后的Hello_World-"><span class="toc-number">2.2.</span> <span class="toc-text">后的Hello World.</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#章节和段落"><span class="toc-number">3.</span> <span class="toc-text">章节和段落</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加入目录"><span class="toc-number">4.</span> <span class="toc-text">加入目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加入公式"><span class="toc-number">5.</span> <span class="toc-text">加入公式</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#用LaTex模版写简历(Windows)"><span class="toc-number">1.</span> <span class="toc-text">用LaTex模版写简历(Windows)</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装环境"><span class="toc-number">1.1.</span> <span class="toc-text">安装环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写简历"><span class="toc-number">1.2.</span> <span class="toc-text">写简历</span></a></li></ol>
 		
 		</div>
 		
-		<p>[TOC]<br><a id="more"></a></p>
-<h2 id="1-_安装">1. <a href="http://www.ctex.org/HomePage" target="_blank">安装</a></h2>
-<h2 id="2-_简单语法">2. 简单语法</h2>
-<h3 id="最简单的Hello_world-">最简单的Hello world.</h3>
-<p>打开WinEdt，建立一个新文档，将以下内容复制进入文档中，保存，保存类型选择为UTF-8。 </p>
-<figure class="highlight LaTex"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-</pre></td><td class="code"><pre>\documentclass<span class="cell">{article}</span> 
-\begin<span class="cell">{document}</span> 
-  hello, world 
-\<span class="keyword">end</span><span class="cell">{document}</span>
-</pre></td></tr></table></figure>
-
-
-<p>然后在WinEdt的工具栏中找到编译按钮（在垃圾桶和字母B中间），在下拉菜单中选择XeTeX，并点击编译。<br>如果顺利的话，我们就可以顺利生成出第一个pdf文件，点击工具栏中的放大镜按钮就可以快速打开生成的pdf文件。 </p>
-<h3 id="加入中文，标题，作者和注释后的Hello_World-">加入<em>中文，标题，作者和注释</em>后的Hello World.</h3>
-<figure class="highlight"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-</pre></td><td class="code"><pre>\documentclass<span class="cell">{article}</span>
-\usepackage<span class="cell">{CJK}</span>  <span class="comment">%中文1</span>
-  \author<span class="cell">{My Name}</span>
-  \title<span class="cell">{The Title}</span>
-\begin<span class="cell">{document}</span>
-\begin<span class="cell">{CJK*}</span><span class="cell">{GBK}</span><span class="cell">{song}</span>  <span class="comment">%中文2</span>
-\maketitle
-Hello <span class="transposed_variable">World.</span> \\  <span class="comment">%回车</span>
-这里输入中文
-\<span class="keyword">end</span><span class="cell">{CJK*}</span>  <span class="comment">%中文3</span>
-\<span class="keyword">end</span><span class="cell">{document}</span>
-</pre></td></tr></table></figure>
-
-
-<h2 id="章节和段落">章节和段落</h2>
-<figure class="highlight"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-</pre></td><td class="code"><pre>\documentclass{article}
-\usepackage{CJK}
-  \author{My Name}
-  \title{The Title}
-\begin{document}
-\begin{CJK*}{GBK}{song}
-\maketitle
-  \section{一级标题} 中国……
-    \subsection{二级标题} Beijing <span class="keyword">is</span> <span class="keyword">the</span> capital <span class="keyword">of</span> China.
-      \subsubsection{三级标题}
-        \<span class="property">paragraph</span>{Tian'anmen Square}<span class="keyword">is</span> <span class="keyword">in</span> <span class="keyword">the</span> center <span class="keyword">of</span> Beijing
-          \subparagraph{Chairman Mao} <span class="keyword">is</span> <span class="keyword">in</span> <span class="keyword">the</span> center <span class="keyword">of</span> Tian'anmen Square
-      \subsection{二级标题}
-        \<span class="property">paragraph</span>{Sun Yat-sen University} <span class="keyword">is</span> <span class="keyword">the</span> best university <span class="keyword">in</span> Guangzhou.
-\<span class="keyword">end</span>{CJK*}
-\<span class="keyword">end</span>{document}
-</pre></td></tr></table></figure>
-
-
-<h2 id="加入目录">加入目录</h2>
-<p>将<code>\maketitle</code>改为<code>\tableofcontents</code>，即可。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-</pre></td><td class="code"><pre>\documentclass{article}
-\usepackage{CJK}
-  \author{My Name}
-  \title{The Title}
-\begin{document}
-\begin{CJK*}{GBK}{song}
-\tableofcontents
-  \section{一级标题} 中国……
-    \subsection{二级标题} Beijing <span class="keyword">is</span> <span class="keyword">the</span> capital <span class="keyword">of</span> China.
-      \subsubsection{三级标题}
-        \<span class="property">paragraph</span>{Tian'anmen Square}<span class="keyword">is</span> <span class="keyword">in</span> <span class="keyword">the</span> center <span class="keyword">of</span> Beijing
-          \subparagraph{Chairman Mao} <span class="keyword">is</span> <span class="keyword">in</span> <span class="keyword">the</span> center <span class="keyword">of</span> Tian'anmen Square
-      \subsection{二级标题}
-        \<span class="property">paragraph</span>{Sun Yat-sen University} <span class="keyword">is</span> <span class="keyword">the</span> best university <span class="keyword">in</span> Guangzhou.
-\<span class="keyword">end</span>{CJK*}
-\<span class="keyword">end</span>{document}
-</pre></td></tr></table></figure>
-
-
-<h2 id="加入公式">加入公式</h2>
-<figure class="highlight"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-</pre></td><td class="code"><pre>\documentclass{article}
-  \usepackage{amsmath}
-  \usepackage{amssymb}
-\<span class="keyword">begin</span>{document}
-<span class="constant">The</span> <span class="constant">Newton</span><span class="string">'s second law is F=ma.
-
-The Newton'</span>s second law is <span class="variable">$F</span>=ma<span class="variable">$.</span> 
-
-<span class="constant">The</span> <span class="constant">Newton</span><span class="string">'s second law is  $$F=ma$$
-
-The Newton'</span>s second law is  \[<span class="constant">F</span>=ma\]
-
-<span class="constant">Greek</span> <span class="constant">Letters</span> <span class="variable">$\</span>eta<span class="variable">$ </span><span class="keyword">and</span> <span class="variable">$\</span>mu<span class="variable">$
-</span>
-<span class="constant">Fraction</span> <span class="variable">$\</span>frac{a}{b}<span class="variable">$
-</span>
-<span class="constant">Power</span> <span class="variable">$a</span>^b<span class="variable">$
-</span>
-<span class="constant">Subscript</span> <span class="variable">$a_b</span><span class="variable">$
-</span>
-<span class="constant">Derivate</span> <span class="variable">$\</span>frac{\partial y}{\partial t} <span class="variable">$
-</span>
-<span class="constant">Vector</span> <span class="variable">$\</span>vec{n}<span class="variable">$
-</span>
-<span class="constant">Bold</span> <span class="variable">$\</span>mathbf{n}<span class="variable">$
-</span>
-<span class="constant">To</span> time differential <span class="variable">$\</span>dot{<span class="constant">F</span>}<span class="variable">$
-</span>\<span class="keyword">end</span>{document}
-</pre></td></tr></table></figure>
-
-
+		<h1 id="用LaTex模版写简历(Windows)">用LaTex模版写简历(Windows)</h1>
+<h2 id="安装环境">安装环境</h2>
+<ol>
+<li>安装软件：<br>下载<a href="http://www.tug.org/texlive/acquire-netinstall.html" target="_blank">install-tl.exe</a>，进行安装。详细参考：<a href="http://exciton.eo.yzu.edu.tw/~lab/latex/install_latex_cjk_ms_windows.html" target="_blank">在 MS Windows 作業系統平台裝設 TeX Live 2011</a></li>
+<li>安装字体：<br>下载这<a href="http://pan.baidu.com/s/1i3uYSYx" target="_blank">四种字体（点击下载）</a>，并<a href="http://www.adobe.com/type/browser/fontinstall/instructions_simp_chinese.html" target="_blank">安装（点击查看安装方式）</a> 。</li>
+</ol>
+<h2 id="写简历">写简历</h2>
+<ol>
+<li>主要参考<a href="http://yixf.name/2012/02/24/%E5%88%B6%E4%BD%9C%E4%B8%AD%E8%8B%B1%E6%96%87%E7%AE%80%E5%8E%86%E7%9A%84xetex%E6%A8%A1%E7%89%88/" target="_blank">“制作中英文简历的XeTeX模板”</a>或者 <a href="http://pan.baidu.com/s/1gudp8" target="_blank">直接下载</a>。</li>
+<li>用安装好的软件”TeXworks editor”打开tex文件，修改后，编译。如下图：<br><img src="/img/1402577752629.png" alt=""></li>
+<li>中英文均编译通过后，可在其基础上，进行修改。</li>
+</ol>
 <blockquote>
-<p><strong>公式效果</strong><br>The Newton’s second law is F=ma.</p>
-<p>The Newton’s second law is $F=ma$. </p>
-<p>The Newton’s second law is  $$F=ma$$</p>
-<p>The Newton’s second law is  [F=ma]</p>
-<p>Greek Letters $\eta$ and $\mu$</p>
-<p>Fraction $\frac{a}{b}$</p>
-<p>Power $a^b$</p>
-<p>Subscript $a_b$</p>
-<p>Derivate $\frac{\partial y}{\partial t} $</p>
-<p>Vector $\vec{n}$</p>
-<p>Bold $\mathbf{n}$</p>
-<p>To time differential $\dot{F}$</p>
+<p>注： </p>
+<ol>
+<li>四个字体一定要安装。</li>
+<li>选择XaLaTex进行编译。</li>
+</ol>
 </blockquote>
   
 	</div>
@@ -329,19 +166,11 @@ The Newton'</span>s second law is  \[<span class="constant">F</span>=ma\]
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/05/21/ML学习笔记1--梯度和牛顿算法/" title="ML学习笔记--梯度和牛顿算法">
-  <strong>上一篇：</strong><br/>
-  <span>
-  ML学习笔记--梯度和牛顿算法</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/05/16/学习计划/"  title="学习计划(5月中旬到八月初)">
+<a href="/2014/06/09/机器学习12-2--em算法--应用到三个模型：-高斯混合模型-，混合朴素贝叶斯模型，因子分析模型（下一部分）/"  title="机器学习12-2--EM算法--应用到三个模型： 高斯混合模型 ，混合朴素贝叶斯模型，因子分析模型（下一部分）">
  <strong>下一篇：</strong><br/> 
- <span>学习计划(5月中旬到八月初)
+ <span>机器学习12-2--EM算法--应用到三个模型： 高斯混合模型 ，混合朴素贝叶斯模型，因子分析模型（下一部分）
 </span>
 </a>
 </div>
@@ -359,7 +188,7 @@ The Newton'</span>s second law is  \[<span class="constant">F</span>=ma\]
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-_安装"><span class="toc-number">1.</span> <span class="toc-text">安装</a></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-_简单语法"><span class="toc-number">2.</span> <span class="toc-text">2. 简单语法</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#最简单的Hello_world-"><span class="toc-number">2.1.</span> <span class="toc-text">最简单的Hello world.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加入中文，标题，作者和注释后的Hello_World-"><span class="toc-number">2.2.</span> <span class="toc-text">后的Hello World.</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#章节和段落"><span class="toc-number">3.</span> <span class="toc-text">章节和段落</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加入目录"><span class="toc-number">4.</span> <span class="toc-text">加入目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加入公式"><span class="toc-number">5.</span> <span class="toc-text">加入公式</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#用LaTex模版写简历(Windows)"><span class="toc-number">1.</span> <span class="toc-text">用LaTex模版写简历(Windows)</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装环境"><span class="toc-number">1.1.</span> <span class="toc-text">安装环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写简历"><span class="toc-number">1.2.</span> <span class="toc-text">写简历</span></a></li></ol>
  
   </div>
 
