@@ -1,0 +1,457 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>机器学习14--PCA主成分分析 | DanielJyc&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="DanielJyc">
+    
+    <meta name="description" content="机器学习14—PCA主成分分析
+概述
+
+高斯分布的样本
+原始变量的线性组合表示新的综合变量，即主成分
+解决特征过多，样本过少的问题
+两个特征强相关的问题，或者两个特征有一个多余
+滤除噪声
+与《模型选择和规则化》对比
+  《模型选择和规则化》要剔除的特征主要是和类标签无关的特征。比如“学生的名字”就和">
+    
+    
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="DanielJycheng" />
+    <meta name="twitter:title" content="机器学习14--PCA主成分分析 | DanielJyc&#39;s blog" />
+      
+    
+    
+    <link rel="alternative" href="/atom.xml" title="DanielJyc&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="DanielJyc&#39;s blog" title="DanielJyc&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="DanielJyc&#39;s blog">DanielJyc&#39;s blog</a></h1>
+				<h2 class="blog-motto">Done is better than perfect.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search/index.html" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" autocomplete="off" name="q" maxlength="20" placeholder="Search" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/06/13/机器学习14--pca主成分分析/" title="机器学习14--PCA主成分分析" itemprop="url">机器学习14--PCA主成分分析</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="http://danieljyc.github.io//about" title="DanielJyc" target="_blank" itemprop="author">DanielJyc</a>
+		
+  <p class="article-time">
+    <time datetime="2014-06-13T14:18:43.000Z" itemprop="datePublished">发表于6月 13 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习14—PCA主成分分析"><span class="toc-number">1.</span> <span class="toc-text">机器学习14—PCA主成分分析</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-number">1.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCA过程"><span class="toc-number">1.2.</span> <span class="toc-text">PCA过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCA_理论基础"><span class="toc-number">1.3.</span> <span class="toc-text">PCA 理论基础</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#最大方差理论"><span class="toc-number">1.3.1.</span> <span class="toc-text">最大方差理论</span></a></li></ol>
+		
+		</div>
+		
+		<h1 id="机器学习14—PCA主成分分析">机器学习14—PCA主成分分析</h1>
+<h2 id="概述">概述</h2>
+<ul>
+<li>高斯分布的样本</li>
+<li>原始变量的线性组合表示新的综合变量，即主成分</li>
+<li>解决特征过多，样本过少的问题</li>
+<li>两个特征强相关的问题，或者两个特征有一个多余</li>
+<li>滤除噪声</li>
+<li>与《模型选择和规则化》对比<blockquote>
+<p>  《模型选择和规则化》要剔除的特征主要是和类标签无关的特征。比如“学生的名字”就和他的“成绩”无关，使用的是互信息的方法。<br>  而这里的特征很多是和类标签有关的，但里面存在噪声或者冗余。在这种情况下，需要一种特征降维的方法来减少特征数，减少噪音和冗余，减少过度拟合的可能性。</p>
+</blockquote>
+</li>
+<li>PCA的思想是将n维特征映射到k维上（k&lt;n），这k维是全新的正交特征。这k维特征称为主元，是重新构造出来的k维特征，而不是简单地从n维特征中去除其余n‐k维特征。 </li>
+</ul>
+<h2 id="PCA过程">PCA过程</h2>
+<ol>
+<li>数据预处理：减去均值，再归一化(除以标准差)。<br><img src="/img/1402651925938.png" alt=""><blockquote>
+<p><img src="/img/1402652006012.png" alt=""></p>
+</blockquote>
+</li>
+<li>求特征协方差矩阵，如果数据是3维，那么协方差矩阵是<br><img src="/img/1402652136007.png" alt=""></li>
+<li>求协方差的特征值和特征向量</li>
+<li>将特征值按照从大到小的顺序排序，选择其中最大的k个，然后将其对应的k个特征向量分别作为列向量组成特征向量矩阵。 <blockquote>
+<p>这里，用简单的方式理解一下为什么选取前k个：在矩阵特征值与特征向量中，越大的特征值对应的特征向量，对被变换矩阵影响越大。</p>
+</blockquote>
+</li>
+<li>将样本点投影到选取的特征向量上。假设样例数为m，特征数为n，减去均值后的样本矩阵为$DataAdjust(m<em>n)$，协方差矩阵是 $n</em>n$，选取的k个特征向量组成的矩阵为$EigenVectors(n*k)$。那么投影后的数据FinalData为<br><img src="/img/1402652338120.png" alt=""></li>
+</ol>
+<h2 id="PCA_理论基础">PCA 理论基础</h2>
+<p>为什么协方差矩阵的特征向量就是k维理想特征，有三个理论：分别是最大方差理论、最小错误理论和坐标轴相关度理论。详见课件。</p>
+<h3 id="最大方差理论">最大方差理论</h3>
+<p>简单理解一下第一种方法：<br>在信号处理中认为信号具有较大的方差，噪声有较小的方差，信噪比就是信号与噪声的方差比，越大越好。如前面的图，样本在横轴上的投影方差较大，在纵轴上的投影方差较小，那么认为纵轴上的投影是由噪声引起的。<br>因此我们认为，最好的k维特征是将n维样本点转换为k维后，每一维上的样本方差都很大。<br><img src="/img/1402652854945.png" alt=""><br><img src="/img/1402652861848.png" alt=""></p>
+<ol>
+<li>方差：<br><img src="/img/1402652954514.png" alt=""><br><img src="/img/1402652971575.png" alt=""></li>
+<li>求解最值问题：<br><img src="/img/1402653035611.png" alt=""></li>
+<li>最终解：<br><img src="/img/1402656028423.png" alt=""><blockquote>
+<p>λ就是Σ的特征值，u是特征向量。最佳的投影直线是特征值λ最大时对应的特征向量，其次是λ第二大对应的特征向量，依次类推。<br><img src="/img/1402657692799.png" alt=""><br>其中的第j 维就是 <img src="/img/1402657748415.png" alt="">上的投影。<br>通过选取最大的k个u，使得方差较小的特征（如噪声）被丢弃。</p>
+</blockquote>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/ML/">ML</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"pig2p## e.g. 2176287895 Your weibo id,It will be used in share button."},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+1394528987915526" charset="utf-8"></script>      
+
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/06/13/机器学习15-1--svd/" title="机器学习15-1--SVD">
+  <strong>上一篇：</strong><br/>
+  <span>
+  机器学习15-1--SVD</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/06/13/机器学习13--em算法--应用到三个模型：-1,2,3因子分析模型/"  title="机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型">
+ <strong>下一篇：</strong><br/> 
+ <span>机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习14—PCA主成分分析"><span class="toc-number">1.</span> <span class="toc-text">机器学习14—PCA主成分分析</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-number">1.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCA过程"><span class="toc-number">1.2.</span> <span class="toc-text">PCA过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCA_理论基础"><span class="toc-number">1.3.</span> <span class="toc-text">PCA 理论基础</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#最大方差理论"><span class="toc-number">1.3.1.</span> <span class="toc-text">最大方差理论</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/ML/" title="ML">ML<sup>17</sup></a></li>
+		
+			<li><a href="/tags/LaTex/" title="LaTex">LaTex<sup>2</sup></a></li>
+		
+			<li><a href="/tags/阿里巴巴大数据竞赛/" title="阿里巴巴大数据竞赛">阿里巴巴大数据竞赛<sup>1</sup></a></li>
+		
+			<li><a href="/tags/学习相关/" title="学习相关">学习相关<sup>1</sup></a></li>
+		
+			<li><a href="/tags/找工作经历/" title="找工作经历">找工作经历<sup>1</sup></a></li>
+		
+			<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://zipperary.com/" target="_blank" title="zippera">Zippera's Blog</a></li>
+      <li><a href="http://brotherb.info/" target="_blank" title="brotherb">Spike's Blog</a></li>
+      <li><a href="http://wuchong.me//" target="_blank" title="JiangTao">Jark's Blog</a></li>
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		
+		<a href="http://weibo.com/pig2p" target="_blank"><div class="author"></div></a>
+		
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello, I&#39;m DanielJyc <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/pig2p" target="_blank" class="icon-weibo" title="weibo"></a>
+		
+		
+		<a href="https://github.com/DanielJyc" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		<a href="http://stackoverflow.com/users/3159782" target="_blank" class="icon-stack-overflow" title="stackoverflow"></a>
+		
+		
+		<a href="https://twitter.com/DanielJycheng" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		<a href="https://www.facebook.com/https://facebook.com/100003504169135" target="_blank" class="icon-facebook" title="facebook"></a>
+		
+		
+		<a href="https://www.douban.com/people/pig2pig" target="_blank" class="icon-douban" title="豆瓣"></a>
+		
+		
+		
+		<a href="mailto:496830205@qq.com## e.g. wuchong1014@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Pacman">Jacman</a> © 2014 
+		
+		<a href="http://danieljyc.github.io//about" target="_blank" title="DanielJyc">DanielJyc</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"danieljyc"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-51069455-1', 'auto');  
+ga('send', 'pageview');
+</script>
+
+
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+<script type="text/x-mathjax-config"> 
+MathJax.Hub.Config({ 
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} 
+}); 
+</script>
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </body>
+</html>

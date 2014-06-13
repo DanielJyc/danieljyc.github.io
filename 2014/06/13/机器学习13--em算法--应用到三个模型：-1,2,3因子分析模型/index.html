@@ -1,0 +1,485 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型 | DanielJyc&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="DanielJyc">
+    
+    <meta name="description" content="机器学习13—EM算法—应用到三个模型： 1,2,3因子分析模型
+使用场所：
+
+
+标签z是连续的
+样本个数大于特征数
+高维—&amp;gt;低维
+潜在的假想变量和随机影响变量的线性组合表示原始变量
+
+
+边缘和条件概率分布
+后面的推导用到了边缘和条件分布：
+
+已知
+边缘分布
+条件概率分布
+
+因子分析模型
+z被">
+    
+    
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="DanielJycheng" />
+    <meta name="twitter:title" content="机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型 | DanielJyc&#39;s blog" />
+      
+    
+    
+    <link rel="alternative" href="/atom.xml" title="DanielJyc&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="DanielJyc&#39;s blog" title="DanielJyc&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="DanielJyc&#39;s blog">DanielJyc&#39;s blog</a></h1>
+				<h2 class="blog-motto">Done is better than perfect.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search/index.html" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" autocomplete="off" name="q" maxlength="20" placeholder="Search" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/06/13/机器学习13--em算法--应用到三个模型：-1,2,3因子分析模型/" title="机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型" itemprop="url">机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="http://danieljyc.github.io//about" title="DanielJyc" target="_blank" itemprop="author">DanielJyc</a>
+		
+  <p class="article-time">
+    <time datetime="2014-06-13T14:17:47.000Z" itemprop="datePublished">发表于6月 13 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习13—EM算法—应用到三个模型：_1,2,3因子分析模型"><span class="toc-number">1.</span> <span class="toc-text">机器学习13—EM算法—应用到三个模型： 1,2,3因子分析模型</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#边缘和条件概率分布"><span class="toc-number">1.1.</span> <span class="toc-text">边缘和条件概率分布</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析模型"><span class="toc-number">1.1.1.</span> <span class="toc-text">因子分析模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析的EM估计"><span class="toc-number">1.1.2.</span> <span class="toc-text">因子分析的EM估计</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#总体步骤："><span class="toc-number">1.1.2.1.</span> <span class="toc-text">总体步骤：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#详细步骤"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">详细步骤</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析总结"><span class="toc-number">1.1.3.</span> <span class="toc-text">因子分析总结</span></a></li></ol>
+		
+		</div>
+		
+		<h1 id="机器学习13—EM算法—应用到三个模型：_1,2,3因子分析模型">机器学习13—EM算法—应用到三个模型： 1,2,3因子分析模型</h1>
+<p>使用场所：</p>
+<blockquote>
+<ul>
+<li>标签z是连续的</li>
+<li>样本个数大于特征数</li>
+<li>高维—&gt;低维</li>
+<li>潜在的假想变量和随机影响变量的线性组合表示原始变量</li>
+</ul>
+</blockquote>
+<h2 id="边缘和条件概率分布">边缘和条件概率分布</h2>
+<p>后面的推导用到了边缘和条件分布：</p>
+<ol>
+<li>已知<br><img src="/img/1402643888925.png" alt=""><br><img src="/img/1402643897459.png" alt=""></li>
+<li>边缘分布<br><img src="/img/1402644050800.png" alt=""></li>
+<li>条件概率分布<br><img src="/img/1402644034979.png" alt=""><br><img src="/img/1402644017552.png" alt=""></li>
+</ol>
+<h3 id="因子分析模型">因子分析模型</h3>
+<p>z被称为因子。我们要做的就是从高维随机连续变量x，变换到低维随机连续变量z。</p>
+<ol>
+<li>首先，我们如下假设：<br><img src="/img/1402644726217.png" alt=""><blockquote>
+<p>eg：从1维到2维：<br>1维：<br><img src="/img/1402644884457.png" alt=""><br>2维<br><img src="/img/1402644835472.png" alt=""></p>
+</blockquote>
+</li>
+<li>我们令：<img src="/img/1402644943708.png" alt=""></li>
+<li>下面经过推导，求得<img src="/img/1402644985335.png" alt="">的具体值：<br><img src="/img/1402645011742.png" alt=""></li>
+<li>因此，我们得到x的边缘分布：<br><img src="/img/1402645065685.png" alt=""></li>
+<li>从而我们对样本 <img src="/img/1402645112290.png" alt="">进行最大似然估计：<br><img src="/img/1402645354898.png" alt=""><br><img src="/img/1402645135298.png" alt=""><blockquote>
+<p>但是，当似然函数最大时，我们得不到解析解（比如，一元二次方程的通解形式）。根据之前对参数估计的理解，在有隐含变量 z 时，我们可以考虑使用 EM 来进行估计。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="因子分析的EM估计">因子分析的EM估计</h3>
+<h4 id="总体步骤：">总体步骤：</h4>
+<p><img src="/img/1402645544248.png" alt=""></p>
+<blockquote>
+<p>注：这里的<img src="/img/1402645598506.png" alt="">要改写为积分符号$\int_{z^{(i)}}^{}$。因为，z是连续随机变量。</p>
+</blockquote>
+<h4 id="详细步骤">详细步骤</h4>
+<p><strong>E步</strong></p>
+<ol>
+<li><img src="/img/1402646453144.png" alt=""><br>根据前面的结论有：<br><img src="/img/1402646478650.png" alt=""><br><img src="/img/1402646499594.png" alt=""></li>
+<li>根据多元高斯公式得：<br><img src="/img/1402646562492.png" alt=""></li>
+</ol>
+<p><strong>M步</strong></p>
+<ol>
+<li>我们目标是最大化：<br><img src="/img/1402646650958.png" alt=""><br><img src="/img/1402646667221.png" alt=""></li>
+<li>通过参数估计，我们最终可以得到：<br><img src="/img/1402646729507.png" alt=""><br><img src="/img/1402646739116.png" alt=""><br><img src="/img/1402646747530.png" alt=""><br>然后将Φ上的对角线上元素抽取出来放到对应的Ψ中，就得到了Ψ。</li>
+</ol>
+<h3 id="因子分析总结">因子分析总结</h3>
+<ol>
+<li>根据上面的 EM 的过程，要对样本 X 进行因子分析，只需知道要分解的因子数（z 的维度）即可。通过 EM，我们能够得到转换矩阵Λ和误差协方差Ψ。<br><img src="/img/1402646963645.png" alt=""></li>
+<li>因子分析(factor  analysis)是一种数据简化的技术。原始的变量是可观测的显在变量，而假想变量是不可观测的潜在变量，称为因子。</li>
+<li>因子分析与回归分析不同，因子分析中的因子是一个比较抽象的概念，而回归因子有非常明确的实际意义</li>
+<li>主成分分析分析与因子分析也有不同，主成分分析仅仅是变量变换，而因子分析需要构造因子模型。<blockquote>
+<p><strong>主成分分析</strong>:原始变量的线性组合表示新的综合变量，即主成分；<br><strong>因子分析</strong>：潜在的假想变量和随机影响变量的线性组合表示原始变量。</p>
+</blockquote>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/ML/">ML</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"pig2p## e.g. 2176287895 Your weibo id,It will be used in share button."},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+1394528987915526" charset="utf-8"></script>      
+
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/06/13/机器学习14--pca主成分分析/" title="机器学习14--PCA主成分分析">
+  <strong>上一篇：</strong><br/>
+  <span>
+  机器学习14--PCA主成分分析</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/06/12/用latex模版写简历(windows)/"  title="用LaTex模版写简历(Windows)">
+ <strong>下一篇：</strong><br/> 
+ <span>用LaTex模版写简历(Windows)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习13—EM算法—应用到三个模型：_1,2,3因子分析模型"><span class="toc-number">1.</span> <span class="toc-text">机器学习13—EM算法—应用到三个模型： 1,2,3因子分析模型</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#边缘和条件概率分布"><span class="toc-number">1.1.</span> <span class="toc-text">边缘和条件概率分布</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析模型"><span class="toc-number">1.1.1.</span> <span class="toc-text">因子分析模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析的EM估计"><span class="toc-number">1.1.2.</span> <span class="toc-text">因子分析的EM估计</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#总体步骤："><span class="toc-number">1.1.2.1.</span> <span class="toc-text">总体步骤：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#详细步骤"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">详细步骤</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析总结"><span class="toc-number">1.1.3.</span> <span class="toc-text">因子分析总结</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/ML/" title="ML">ML<sup>17</sup></a></li>
+		
+			<li><a href="/tags/LaTex/" title="LaTex">LaTex<sup>2</sup></a></li>
+		
+			<li><a href="/tags/阿里巴巴大数据竞赛/" title="阿里巴巴大数据竞赛">阿里巴巴大数据竞赛<sup>1</sup></a></li>
+		
+			<li><a href="/tags/学习相关/" title="学习相关">学习相关<sup>1</sup></a></li>
+		
+			<li><a href="/tags/找工作经历/" title="找工作经历">找工作经历<sup>1</sup></a></li>
+		
+			<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://zipperary.com/" target="_blank" title="zippera">Zippera's Blog</a></li>
+      <li><a href="http://brotherb.info/" target="_blank" title="brotherb">Spike's Blog</a></li>
+      <li><a href="http://wuchong.me//" target="_blank" title="JiangTao">Jark's Blog</a></li>
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		
+		<a href="http://weibo.com/pig2p" target="_blank"><div class="author"></div></a>
+		
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello, I&#39;m DanielJyc <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/pig2p" target="_blank" class="icon-weibo" title="weibo"></a>
+		
+		
+		<a href="https://github.com/DanielJyc" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		<a href="http://stackoverflow.com/users/3159782" target="_blank" class="icon-stack-overflow" title="stackoverflow"></a>
+		
+		
+		<a href="https://twitter.com/DanielJycheng" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		<a href="https://www.facebook.com/https://facebook.com/100003504169135" target="_blank" class="icon-facebook" title="facebook"></a>
+		
+		
+		<a href="https://www.douban.com/people/pig2pig" target="_blank" class="icon-douban" title="豆瓣"></a>
+		
+		
+		
+		<a href="mailto:496830205@qq.com## e.g. wuchong1014@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Pacman">Jacman</a> © 2014 
+		
+		<a href="http://danieljyc.github.io//about" target="_blank" title="DanielJyc">DanielJyc</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"danieljyc"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-51069455-1', 'auto');  
+ga('send', 'pageview');
+</script>
+
+
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+<script type="text/x-mathjax-config"> 
+MathJax.Hub.Config({ 
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} 
+}); 
+</script>
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </body>
+</html>
