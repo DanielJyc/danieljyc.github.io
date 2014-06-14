@@ -1,0 +1,483 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>机器学习16--增强学习——有限状态的马尔科夫决策过程MDP | DanielJyc&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="DanielJyc">
+    
+    <meta name="description" content="机器学习16—增强学习——有限状态的马尔科夫决策过程MDP
+16-20讲均为增强学习相关知识。暂时，只对16、17进行总结。增强学习：找到一条回报值最大的路径（每步的回报之和最大），就认为是最佳的路径。eg：四足机器人、象棋 AI 程序、机器人控制，手机网络路由，市场决策，工业控制，高效网页索引等。">
+    
+    
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="DanielJycheng" />
+    <meta name="twitter:title" content="机器学习16--增强学习——有限状态的马尔科夫决策过程MDP | DanielJyc&#39;s blog" />
+      
+    
+    
+    <link rel="alternative" href="/atom.xml" title="DanielJyc&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="DanielJyc&#39;s blog" title="DanielJyc&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="DanielJyc&#39;s blog">DanielJyc&#39;s blog</a></h1>
+				<h2 class="blog-motto">Done is better than perfect.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="/search/index.html" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" autocomplete="off" name="q" maxlength="20" placeholder="Search" />
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/06/14/机器学习16--增强学习——有限状态的马尔科夫决策过程mdp/" title="机器学习16--增强学习——有限状态的马尔科夫决策过程MDP" itemprop="url">机器学习16--增强学习——有限状态的马尔科夫决策过程MDP</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="http://danieljyc.github.io//about" title="DanielJyc" target="_blank" itemprop="author">DanielJyc</a>
+		
+  <p class="article-time">
+    <time datetime="2014-06-14T06:03:21.000Z" itemprop="datePublished">发表于6月 14 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习16—增强学习——有限状态的马尔科夫决策过程MDP"><span class="toc-number">1.</span> <span class="toc-text">机器学习16—增强学习——有限状态的马尔科夫决策过程MDP</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#马尔科夫决策过程——MDP"><span class="toc-number">1.1.</span> <span class="toc-text">马尔科夫决策过程——MDP</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念"><span class="toc-number">1.1.1.</span> <span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#公式推导（最优值函数和最优策略）"><span class="toc-number">1.1.2.</span> <span class="toc-text">公式推导（最优值函数和最优策略）</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#有限状态的MDP具体策略的有效算法——值迭代和策略迭代法"><span class="toc-number">1.2.</span> <span class="toc-text">有限状态的MDP具体策略的有效算法——值迭代和策略迭代法</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#值迭代法"><span class="toc-number">1.2.1.</span> <span class="toc-text">值迭代法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#策略迭代法"><span class="toc-number">1.2.2.</span> <span class="toc-text">策略迭代法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#两种方法的总结"><span class="toc-number">1.2.3.</span> <span class="toc-text">两种方法的总结</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#MDP_中的参数估计"><span class="toc-number">1.3.</span> <span class="toc-text">MDP 中的参数估计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NG老师的黑板图"><span class="toc-number">1.4.</span> <span class="toc-text">NG老师的黑板图</span></a></li></ol>
+		
+		</div>
+		
+		<h1 id="机器学习16—增强学习——有限状态的马尔科夫决策过程MDP">机器学习16—增强学习——有限状态的马尔科夫决策过程MDP</h1>
+<p>16-20讲均为增强学习相关知识。暂时，只对16、17进行总结。<br><strong>增强学习：找到一条回报值最大的路径（每步的回报之和最大），就认为是最佳的路径。</strong>eg：四足机器人、象棋 AI 程序、机器人控制，手机网络路由，市场决策，工业控制，高效网页索引等。</p>
+<h2 id="马尔科夫决策过程——MDP">马尔科夫决策过程——MDP</h2>
+<h3 id="基本概念">基本概念</h3>
+<ol>
+<li>一个马尔科夫决策过程由一个五元组构成<img src="/img/1402710068772.png" alt=""><br><img src="/img/1402710078322.png" alt=""></li>
+<li>概念：</li>
+</ol>
+<ul>
+<li><strong>值函数：</strong><br>为了区分不同π的好坏，并定义在当前状态下，执行某个策略π后，出现的结果的好坏， 需要定义值函数：<br><img src="/img/1402710949853.png" alt=""></li>
+<li><strong>策略(pllicy)：</strong><br><img src="/img/1402710858178.png" alt=""><h3 id="公式推导（最优值函数和最优策略）">公式推导（最优值函数和最优策略）</h3>
+</li>
+</ul>
+<ol>
+<li>对于如下问题，Robot开始位于(3,1)位置。目的是右上角。可能有11个状态。<br><img src="/img/1402710372896.png" alt=""><blockquote>
+<ul>
+<li>行走的概率：<br><img src="/img/1402710507486.png" alt=""></li>
+<li>回报函数<br><img src="/img/1402710588064.png" alt=""></li>
+<li>在某一点时的值函数。对于上述问题，有11个方程，11个未知量。<br><img src="/img/1402710711280.png" alt=""></li>
+</ul>
+</blockquote>
+</li>
+<li>进一步化简，我们得到<br><img src="/img/1402711107534.png" alt=""><br><strong>Bellman 等式</strong><br><img src="/img/1402711134218.png" alt=""><br>其中，<img src="/img/1402711174970.png" alt="">表示下一个状态。</li>
+<li>定义最优值函数：$V^{\star}$。从而，找到一个当前状态 s 下，最优的行动策略π。<br><img src="/img/1402711486695.png" alt=""></li>
+<li>最终，我们得到想要的最优值函数和最优策略：<br><img src="/img/1402711545140.png" alt=""><br><img src="/img/1402711554173.png" alt=""></li>
+<li>这里需要注意的是，如果我们能够求得每个 s 下最优的 a，那么从全局来看，<img src="/img/1402711695076.png" alt="">的<br>映射即可生成，而生成的这个映射是<strong>最优映射</strong>，称为<img src="/img/1402711718439.png" alt="">。<img src="/img/1402711724320.png" alt="">针对全局的 s，确定了每一个 s的下一个行动 a，<strong>不会因为初始状态 s 选取的不同而不同</strong>。</li>
+</ol>
+<h2 id="有限状态的MDP具体策略的有效算法——值迭代和策略迭代法">有限状态的MDP具体策略的有效算法——值迭代和策略迭代法</h2>
+<p>前提：状态有限<img src="/img/1402712009762.png" alt=""></p>
+<h3 id="值迭代法">值迭代法</h3>
+<ol>
+<li>过程<br><img src="/img/1402712329090.png" alt=""><br>其中，迭代公式也可以写作：<img src="/img/1402712357916.png" alt=""></li>
+<li>内循环的有两种策略：<br><img src="/img/1402712418667.png" alt=""></li>
+<li>两种迭代法最终收敛到$V^{\star}$。我们再用如下公式，求出最优策略$\pi^{\star}$<br><img src="/img/1402711554173.png" alt=""></li>
+</ol>
+<h3 id="策略迭代法">策略迭代法</h3>
+<ol>
+<li><img src="/img/1402712676239.png" alt=""><br><img src="/img/1402712218305.png" alt=""><blockquote>
+<p>注：在1-(a)中，我们认为得到的V为最优值函数。然后，在(b)中，进行更新得到最优策略。一直重复，知道得到真正的最优策略$\pi^{\star}$。</p>
+</blockquote>
+</li>
+<li>(a)步中的 V 可以通过之前的 Bellman 等式求得<br><img src="/img/1402712850142.png" alt=""><br>(b)步实际上就是根据(a)步的结果挑选出当前状态 s 下，最优的 a，然后对π(s)做更新。<blockquote>
+<p>这里的两个步骤，相当于求解11(状态个数)个线性方程。如果状态非常多，显然计算量相当大。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="两种方法的总结">两种方法的总结</h3>
+<p><strong>规模比较小的 MDP：</strong> 策略一般能够更快地收敛。<br><strong>规模很大（状态很多）MDP：</strong>值迭代比较容易（不用求线性方程组）。</p>
+<h2 id="MDP_中的参数估计">MDP 中的参数估计</h2>
+<p>实际中：</p>
+<blockquote>
+<ul>
+<li>未知量：状态转移概率$P_{sa}$𣠠和回报函数 R(s)</li>
+<li>已知量： S、 A 和γ</li>
+</ul>
+</blockquote>
+<p>下面我们对状态转移概率$P_{sa}$和回报函数 R(s)进行估计：</p>
+<ol>
+<li>假设我们已知很多条状态转移路径如下：（相当于样本）<br><img src="/img/1402713281165.png" alt=""><blockquote>
+<p>其中：<img src="/img/1402713339591.png" alt=""></p>
+</blockquote>
+</li>
+<li>如果我们获得了很多上面类似的转移链（相当于有了样本），那么我们就可以使用最大似然估计来估计状态转移概率。<br><img src="/img/1402713428679.png" alt=""><blockquote>
+<p>注：分子是从 s 状态执行动作 a 后到达 s’的次数，分母是在状态 s 时，执行 a 的次数。两者相除就是<strong>在 s 状态下执行 a 后，会转移到 s’的概率。</strong></p>
+</blockquote>
+</li>
+<li>同样，如果回报函数未知，那么我们认为 R(s)为在 s 状态下已经观测到的回报均值。</li>
+<li>我们将参数估计和值迭代结合起来（在不知道状态转移概率情况下）的流程如下：<br><img src="/img/1402713654890.png" alt=""><blockquote>
+<p>在(b)步中我们要做值更新，也是一个循环迭代的过程，在上节中，我们通过将 V 初始化为 0，然后进行迭代来求解 V。嵌套到上面的过程后，如果每次初始化 V 为 0，然后迭代更新， 就会很慢。一个加快速度的方法是每次将 V 初始化为上一次大循环中得到的 V。 也就是说 V 的初值衔接了上次的结果。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="NG老师的黑板图">NG老师的黑板图</h2>
+<p>最后把两张NG老师画的图放过来<br><img src="/img/1402469025434.png" alt=""><br><img src="/img/1402471158800.png" alt=""></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/ML/">ML</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"pig2p## e.g. 2176287895 Your weibo id,It will be used in share button."},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+1394528987915526" charset="utf-8"></script>      
+
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/06/14/机器学习17--增强学习——拟合的值迭代法（fitted-value-iterator）/" title="机器学习17--增强学习——拟合的值迭代法（fitted value iterator）">
+  <strong>上一篇：</strong><br/>
+  <span>
+  机器学习17--增强学习——拟合的值迭代法（fitted value iterator）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/06/13/机器学习15-3--独立成分分析ica（independent-component-analysis）/"  title="机器学习15-3--独立成分分析ICA（Independent Component Analysis）">
+ <strong>下一篇：</strong><br/> 
+ <span>机器学习15-3--独立成分分析ICA（Independent Component Analysis）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习16—增强学习——有限状态的马尔科夫决策过程MDP"><span class="toc-number">1.</span> <span class="toc-text">机器学习16—增强学习——有限状态的马尔科夫决策过程MDP</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#马尔科夫决策过程——MDP"><span class="toc-number">1.1.</span> <span class="toc-text">马尔科夫决策过程——MDP</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念"><span class="toc-number">1.1.1.</span> <span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#公式推导（最优值函数和最优策略）"><span class="toc-number">1.1.2.</span> <span class="toc-text">公式推导（最优值函数和最优策略）</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#有限状态的MDP具体策略的有效算法——值迭代和策略迭代法"><span class="toc-number">1.2.</span> <span class="toc-text">有限状态的MDP具体策略的有效算法——值迭代和策略迭代法</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#值迭代法"><span class="toc-number">1.2.1.</span> <span class="toc-text">值迭代法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#策略迭代法"><span class="toc-number">1.2.2.</span> <span class="toc-text">策略迭代法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#两种方法的总结"><span class="toc-number">1.2.3.</span> <span class="toc-text">两种方法的总结</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#MDP_中的参数估计"><span class="toc-number">1.3.</span> <span class="toc-text">MDP 中的参数估计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NG老师的黑板图"><span class="toc-number">1.4.</span> <span class="toc-text">NG老师的黑板图</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/ML/" title="ML">ML<sup>19</sup></a></li>
+		
+			<li><a href="/tags/LaTex/" title="LaTex">LaTex<sup>2</sup></a></li>
+		
+			<li><a href="/tags/阿里巴巴大数据竞赛/" title="阿里巴巴大数据竞赛">阿里巴巴大数据竞赛<sup>1</sup></a></li>
+		
+			<li><a href="/tags/找工作经历/" title="找工作经历">找工作经历<sup>1</sup></a></li>
+		
+			<li><a href="/tags/学习相关/" title="学习相关">学习相关<sup>1</sup></a></li>
+		
+			<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://zipperary.com/" target="_blank" title="zippera">Zippera's Blog</a></li>
+      <li><a href="http://brotherb.info/" target="_blank" title="brotherb">Spike's Blog</a></li>
+      <li><a href="http://wuchong.me//" target="_blank" title="JiangTao">Jark's Blog</a></li>
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		
+		<a href="http://weibo.com/pig2p" target="_blank"><div class="author"></div></a>
+		
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello, I&#39;m DanielJyc <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/pig2p" target="_blank" class="icon-weibo" title="weibo"></a>
+		
+		
+		<a href="https://github.com/DanielJyc" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		<a href="http://stackoverflow.com/users/3159782" target="_blank" class="icon-stack-overflow" title="stackoverflow"></a>
+		
+		
+		<a href="https://twitter.com/DanielJycheng" target="_blank" class="icon-twitter" title="twitter"></a>
+		
+		
+		<a href="https://www.facebook.com/https://facebook.com/100003504169135" target="_blank" class="icon-facebook" title="facebook"></a>
+		
+		
+		<a href="https://www.douban.com/people/pig2pig" target="_blank" class="icon-douban" title="豆瓣"></a>
+		
+		
+		
+		<a href="mailto:496830205@qq.com## e.g. wuchong1014@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Pacman">Jacman</a> © 2014 
+		
+		<a href="http://danieljyc.github.io//about" target="_blank" title="DanielJyc">DanielJyc</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"danieljyc"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-51069455-1', 'auto');  
+ga('send', 'pageview');
+</script>
+
+
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+<script type="text/x-mathjax-config"> 
+MathJax.Hub.Config({ 
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} 
+}); 
+</script>
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </body>
+</html>
