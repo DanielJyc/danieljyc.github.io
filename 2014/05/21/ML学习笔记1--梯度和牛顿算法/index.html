@@ -4,18 +4,19 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>ML学习笔记--梯度和牛顿算法 | DanielJyc&#39;s blog</title>
+    <title>机器学习1_2_3_4--梯度和牛顿算法 | DanielJyc&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="DanielJyc">
     
-    <meta name="description" content="[TOC]">
+    <meta name="description" content="一、 符号说明
+$m$:样本数目（行数）&amp;lt;—&amp;gt;$i$某一行$n:$特征数目（列数）&amp;lt;—&amp;gt;$j$某一列$x,y$:输入和输出变量$i^{th}$:training example&amp;lt;—&amp;gt;$(x^{(i)}, y{(j)})$$\theta$学习参数$h_{\theta">
     
     
     
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="DanielJycheng" />
-    <meta name="twitter:title" content="ML学习笔记--梯度和牛顿算法 | DanielJyc&#39;s blog" />
+    <meta name="twitter:title" content="机器学习1_2_3_4--梯度和牛顿算法 | DanielJyc&#39;s blog" />
       
     
     
@@ -73,7 +74,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/05/21/ML学习笔记1--梯度和牛顿算法/" title="ML学习笔记--梯度和牛顿算法" itemprop="url">ML学习笔记--梯度和牛顿算法</a>
+      <a href="/2014/05/21/ML学习笔记1--梯度和牛顿算法/" title="机器学习1_2_3_4--梯度和牛顿算法" itemprop="url">机器学习1_2_3_4--梯度和牛顿算法</a>
   </h1>
   <p class="article-author">By
        
@@ -94,32 +95,33 @@
 		
 		</div>
 		
-		<p>[TOC]<br><a id="more"></a></p>
+		<a id="more"></a>
+
 <h1 id="一、_符号说明">一、 符号说明</h1>
 <p>$m$:样本数目（行数）&lt;—&gt;$i$某一行<br>$n:$特征数目（列数）&lt;—&gt;$j$某一列<br>$x,y$:输入和输出变量<br>$i^{th}$:training example&lt;—&gt;$(x^{(i)}, y{(j)})$<br>$\theta$学习参数<br>$h_{\theta}(x)$:输出函数</p>
 <h1 id="二、_算法总结">二、 算法总结</h1>
 <h2 id="1-_最小均方（误差）算法LMS">1. 最小均方（误差）算法LMS</h2>
-<p>该算法是为了使损失函数最小。<strong>损失函数</strong>为：<br><img src="https://lh6.googleusercontent.com/-ol10ZJK9cPo/U3t1OIb2MCI/AAAAAAAAAOw/LNjQEVvwcsg/s0/cost+function.jpg" alt="enter image description here" title="cost function.jpg"><br><img src="https://lh3.googleusercontent.com/-4mWbVm1nT1c/U3wENr2EzmI/AAAAAAAAARc/oXMSN244R0Q/s0/hx.jpg" alt="enter image description here" title="hx.jpg"><br><strong>得到梯度下降的基本算法</strong>，下面会对其展开详细说明<br><img src="https://lh6.googleusercontent.com/-yKTMmTUpAF0/U3t2oP6iCrI/AAAAAAAAAPE/Zo5gG0WfJmM/s0/gradient+descent.jpg" alt="enter image description here" title="gradient descent.jpg"></p>
+<p>该算法是为了使损失函数最小。<strong>损失函数</strong>为：<br><img src="https://lh6.googleusercontent.com/-ol10ZJK9cPo/U3t1OIb2MCI/AAAAAAAAAOw/LNjQEVvwcsg/s0/cost+function.jpg" alt="" title="cost function.jpg"><br><img src="https://lh3.googleusercontent.com/-4mWbVm1nT1c/U3wENr2EzmI/AAAAAAAAARc/oXMSN244R0Q/s0/hx.jpg" alt="" title="hx.jpg"><br><strong>得到梯度下降的基本算法</strong>，下面会对其展开详细说明<br><img src="https://lh6.googleusercontent.com/-yKTMmTUpAF0/U3t2oP6iCrI/AAAAAAAAAPE/Zo5gG0WfJmM/s0/gradient+descent.jpg" alt="" title="gradient descent.jpg"></p>
 <h3 id="1-1_批量梯度下降">1.1 批量梯度下降</h3>
-<p>缺点：不适合数据量很大的情况<br><img src="https://lh5.googleusercontent.com/-CQbW2GrkIPs/U3t23xymGBI/AAAAAAAAAPQ/slVUqCcAQdY/s0/batch.jpg" alt="enter image description here" title="batch.jpg"></p>
+<p>缺点：不适合数据量很大的情况<br><img src="https://lh5.googleusercontent.com/-CQbW2GrkIPs/U3t23xymGBI/AAAAAAAAAPQ/slVUqCcAQdY/s0/batch.jpg" alt="" title="batch.jpg"></p>
 <h3 id="1-2_随机梯度下降">1.2 随机梯度下降</h3>
-<p><img src="https://lh4.googleusercontent.com/-eG2nD3WCY50/U3t3Lm22MMI/AAAAAAAAAPc/1Bl4lcqqvwI/s0/stochastic+gradient+descent.jpg" alt="enter image description here" title="stochastic gradient descent.jpg"></p>
+<p><img src="https://lh4.googleusercontent.com/-eG2nD3WCY50/U3t3Lm22MMI/AAAAAAAAAPc/1Bl4lcqqvwI/s0/stochastic+gradient+descent.jpg" alt="" title="stochastic gradient descent.jpg"></p>
 <h3 id="1-3_另外一种最小化$J_{\theta}$的算法最小二乘法">1.3 另外一种最小化$J_{\theta}$的算法<strong>最小二乘法</strong></h3>
-<p><img src="https://lh5.googleusercontent.com/-W1kHzCe7eLI/U3t4HBY1RrI/AAAAAAAAAPw/YgOyhxwX5aA/s0/Least+squares+revisited.jpg" alt="enter image description here" title="Least squares revisited.jpg"> $(J=0)$</p>
+<p><img src="https://lh5.googleusercontent.com/-W1kHzCe7eLI/U3t4HBY1RrI/AAAAAAAAAPw/YgOyhxwX5aA/s0/Least+squares+revisited.jpg" alt="" title="Least squares revisited.jpg"> $(J=0)$</p>
 <h2 id="2-_局部加权线性回归">2. 局部加权线性回归</h2>
 <p>优点：在一定程度上防止了过拟合和欠拟合</p>
 <ul>
 <li>参数化的学习算法：有固定参数学习，用来数据拟合</li>
-<li>非参数学习算法： 局部加权线性回归<br><img src="https://lh6.googleusercontent.com/-jnTUq0qekYE/U3t7j27beSI/AAAAAAAAAQc/cWQi353jmzk/s0/Locally+weighted+linear+regression.jpg" alt="enter image description here" title="Locally weighted linear regression.jpg"><h2 id="3-逻辑回归（第一种：最大化$L(\theta)$）">3.逻辑回归（第一种：最大化$L(\theta)$）</h2>
+<li>非参数学习算法： 局部加权线性回归<br><img src="https://lh6.googleusercontent.com/-jnTUq0qekYE/U3t7j27beSI/AAAAAAAAAQc/cWQi353jmzk/s0/Locally+weighted+linear+regression.jpg" alt="" title="Locally weighted linear regression.jpg"><h2 id="3-逻辑回归（第一种：最大化$L(\theta)$）">3.逻辑回归（第一种：最大化$L(\theta)$）</h2>
 </li>
-<li>基本公式：<br><img src="https://lh4.googleusercontent.com/-KWT4CR3C4Vs/U3t8K_dBSXI/AAAAAAAAAQo/NqpWlHf1Fm0/s0/logistic+function.jpg" alt="enter image description here" title="logistic function.jpg"></li>
-<li><strong>$\theta$</strong>的训练方法：利用梯度上升，来最大化似然函数(Likehood Function):<br><img src="https://lh5.googleusercontent.com/-UUaGwVVAbjQ/U3wEuS9XJmI/AAAAAAAAARo/O_TDqJHv3So/s0/logistic+function2.jpg" alt="enter image description here" title="logistic function2.jpg"></li>
+<li>基本公式：<br><img src="https://lh4.googleusercontent.com/-KWT4CR3C4Vs/U3t8K_dBSXI/AAAAAAAAAQo/NqpWlHf1Fm0/s0/logistic+function.jpg" alt="" title="logistic function.jpg"></li>
+<li><strong>$\theta$</strong>的训练方法：利用梯度上升，来最大化似然函数(Likehood Function):<br><img src="https://lh5.googleusercontent.com/-UUaGwVVAbjQ/U3wEuS9XJmI/AAAAAAAAARo/O_TDqJHv3So/s0/logistic+function2.jpg" alt="" title="logistic function2.jpg"></li>
 <li><strong>注：</strong>得到的最终结果，与LMS中的循环规则完全一样。但是，不同之处在于：此处$h_{\theta}(x^{(i)})$为非线性的。</li>
 </ul>
 <h2 id="4-牛顿（第二种：最大化$L(\theta)$）">4.牛顿（第二种：最大化$L(\theta)$）</h2>
-<p><img src="https://lh5.googleusercontent.com/-fFqF7wklLcQ/U3wJKyGh3PI/AAAAAAAAAR0/O9fF82XRmFM/s0/%E7%89%9B%E9%A1%BF%E6%96%B9%E6%B3%95.jpg" alt="enter image description here" title="牛顿方法.jpg"></p>
+<p><img src="https://lh5.googleusercontent.com/-fFqF7wklLcQ/U3wJKyGh3PI/AAAAAAAAAR0/O9fF82XRmFM/s0/%E7%89%9B%E9%A1%BF%E6%96%B9%E6%B3%95.jpg" alt="" title="牛顿方法.jpg"></p>
 <h1 id="三、_从概率角度解释最小化$J$的含义">三、 从概率角度解释最小化$J$的含义</h1>
-<p>使误差为0的概率最大&lt;—&gt;最大化相似函数<strong>$l(\theta)$或者$L(\theta)$</strong>&lt;—&gt;最小化<strong>$J$</strong> ：最大似然估计<br><img src="https://lh3.googleusercontent.com/-TP7AitLa8bg/U3t5mi8JLqI/AAAAAAAAAQM/3zIC3IrN04s/s0/likelihood.jpg" alt="enter image description here" title="likelihood.jpg"></p>
+<p>使误差为0的概率最大&lt;—&gt;最大化相似函数<strong>$l(\theta)$或者$L(\theta)$</strong>&lt;—&gt;最小化<strong>$J$</strong> ：最大似然估计<br><img src="https://lh3.googleusercontent.com/-TP7AitLa8bg/U3t5mi8JLqI/AAAAAAAAAQM/3zIC3IrN04s/s0/likelihood.jpg" alt="" title="likelihood.jpg"></p>
 <blockquote>
 <p>Written with <a href="https://stackedit.io/" target="_blank">StackEdit</a>.</p>
 </blockquote>
@@ -169,10 +171,10 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2014/05/22/机器学习2-glm-广义线性模型/" title="机器学习2-GLM 广义线性模型">
+ <a href="/2014/05/22/机器学习2-glm-广义线性模型/" title="机器学习4--GLM 广义线性模型&#39;">
   <strong>上一篇：</strong><br/>
   <span>
-  机器学习2-GLM 广义线性模型</span>
+  机器学习4--GLM 广义线性模型&#39;</span>
 </a>
 </div>
 
