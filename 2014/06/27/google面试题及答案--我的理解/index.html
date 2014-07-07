@@ -4,36 +4,23 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型 | DanielJyc&#39;s blog</title>
+    <title>Google面试题及答案--我的理解 | DanielJyc&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="DanielJyc">
     
-    <meta name="description" content="机器学习13—EM算法—应用到三个模型： 1,2,3因子分析模型
-使用场所：
+    <meta name="description" content="将一根木条折成3段之后，可以形成一个三角形的概率有多大？
+假设木棍长度为1，分成的三段长度为x,y,(1-x-y)。整个区域为①    0=&amp;lt; x &amp;lt;= 1②    0=&amp;lt; y &amp;lt;= 1③    0=&amp;lt; 1-x-y &amp;lt;= 1面积大小为1/2
 
 
-标签z是连续的
-样本个数大于特征数
-高维—&amp;gt;低维
-潜在的假想变量和随机影响变量的线性组合表示原始变量
 
-
-边缘和条件概率分布
-后面的推导用到了边缘和条件分布：
-
-已知
-边缘分布
-条件概率分布
-
-因子分析模型
-z被">
+三角形要满足的条">
     
     
     
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="DanielJycheng" />
-    <meta name="twitter:title" content="机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型 | DanielJyc&#39;s blog" />
+    <meta name="twitter:title" content="Google面试题及答案--我的理解 | DanielJyc&#39;s blog" />
       
     
     
@@ -91,14 +78,14 @@ z被">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/06/13/机器学习13--em算法--应用到三个模型：-1,2,3因子分析模型/" title="机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型" itemprop="url">机器学习13--EM算法--应用到三个模型： 1,2,3因子分析模型</a>
+      <a href="/2014/06/27/google面试题及答案--我的理解/" title="Google面试题及答案--我的理解" itemprop="url">Google面试题及答案--我的理解</a>
   </h1>
   <p class="article-author">By
        
 		<a href="http://danieljyc.github.io//about" title="DanielJyc" target="_blank" itemprop="author">DanielJyc</a>
 		
   <p class="article-time">
-    <time datetime="2014-06-13T14:17:47.000Z" itemprop="datePublished">发表于6月 13 2014</time>
+    <time datetime="2014-06-27T03:32:13.000Z" itemprop="datePublished">发表于6月 27 2014</time>
     
   </p>
 </header>
@@ -108,69 +95,20 @@ z被">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习13—EM算法—应用到三个模型：_1,2,3因子分析模型"><span class="toc-number">1.</span> <span class="toc-text">机器学习13—EM算法—应用到三个模型： 1,2,3因子分析模型</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#边缘和条件概率分布"><span class="toc-number">1.1.</span> <span class="toc-text">边缘和条件概率分布</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析模型"><span class="toc-number">1.1.1.</span> <span class="toc-text">因子分析模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析的EM估计"><span class="toc-number">1.1.2.</span> <span class="toc-text">因子分析的EM估计</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#总体步骤："><span class="toc-number">1.1.2.1.</span> <span class="toc-text">总体步骤：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#详细步骤"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">详细步骤</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析总结"><span class="toc-number">1.1.3.</span> <span class="toc-text">因子分析总结</span></a></li></ol>
+			
 		
 		</div>
 		
-		<h1 id="机器学习13—EM算法—应用到三个模型：_1,2,3因子分析模型">机器学习13—EM算法—应用到三个模型： 1,2,3因子分析模型</h1>
-<p>使用场所：</p>
-<blockquote>
-<ul>
-<li>标签z是连续的</li>
-<li>样本个数大于特征数</li>
-<li>高维—&gt;低维</li>
-<li>潜在的假想变量和随机影响变量的线性组合表示原始变量</li>
-</ul>
-</blockquote>
-<h2 id="边缘和条件概率分布">边缘和条件概率分布</h2>
-<p>后面的推导用到了边缘和条件分布：</p>
-<ol>
-<li>已知<br><img src="/img/1402643888925.png" alt=""><br><img src="/img/1402643897459.png" alt=""></li>
-<li>边缘分布<br><img src="/img/1402644050800.png" alt=""></li>
-<li>条件概率分布<br><img src="/img/1402644034979.png" alt=""><br><img src="/img/1402644017552.png" alt=""></li>
-</ol>
-<h3 id="因子分析模型">因子分析模型</h3>
-<p>z被称为因子。我们要做的就是从高维随机连续变量x，变换到低维随机连续变量z。</p>
-<ol>
-<li>首先，我们如下假设：<br><img src="/img/1402644726217.png" alt=""><blockquote>
-<p>eg：从1维到2维：<br>1维：<br><img src="/img/1402644884457.png" alt=""><br>2维<br><img src="/img/1402644835472.png" alt=""></p>
-</blockquote>
-</li>
-<li>我们令：<img src="/img/1402644943708.png" alt=""></li>
-<li>下面经过推导，求得<img src="/img/1402644985335.png" alt="">的具体值：<br><img src="/img/1402645011742.png" alt=""></li>
-<li>因此，我们得到x的边缘分布：<br><img src="/img/1402645065685.png" alt=""></li>
-<li>从而我们对样本 <img src="/img/1402645112290.png" alt="">进行最大似然估计：<br><img src="/img/1402645354898.png" alt=""><br><img src="/img/1402645135298.png" alt=""><blockquote>
-<p>但是，当似然函数最大时，我们得不到解析解（比如，一元二次方程的通解形式）。根据之前对参数估计的理解，在有隐含变量 z 时，我们可以考虑使用 EM 来进行估计。</p>
+		<ol>
+<li>将一根木条折成3段之后，可以形成一个三角形的概率有多大？<blockquote>
+<p>假设木棍长度为1，分成的三段长度为x,y,(1-x-y)。<br>整个区域为<br>①    0=&lt; x &lt;= 1<br>②    0=&lt; y &lt;= 1<br>③    0=&lt; 1-x-y &lt;= 1<br>面积大小为1/2</p>
 </blockquote>
 </li>
 </ol>
-<h3 id="因子分析的EM估计">因子分析的EM估计</h3>
-<h4 id="总体步骤：">总体步骤：</h4>
-<p><img src="/img/1402645544248.png" alt=""></p>
-<blockquote>
-<p>注：这里的<img src="/img/1402645598506.png" alt="">要改写为积分符号$\int_{z^{(i)}}^{}$。因为，z是连续随机变量。</p>
-</blockquote>
-<h4 id="详细步骤">详细步骤</h4>
-<p><strong>E步</strong></p>
-<ol>
-<li><img src="/img/1402646453144.png" alt=""><br>根据前面的结论有：<br><img src="/img/1402646478650.png" alt=""><br><img src="/img/1402646499594.png" alt=""></li>
-<li>根据多元高斯公式得：<br><img src="/img/1402646562492.png" alt=""></li>
-</ol>
-<p><strong>M步</strong></p>
-<ol>
-<li>我们目标是最大化：<br><img src="/img/1402646650958.png" alt=""><br><img src="/img/1402646667221.png" alt=""></li>
-<li>通过参数估计，我们最终可以得到：<br><img src="/img/1402646729507.png" alt=""><br><img src="/img/1402646739116.png" alt=""><br><img src="/img/1402646747530.png" alt=""><br>然后将Φ上的对角线上元素抽取出来放到对应的Ψ中，就得到了Ψ。</li>
-</ol>
-<h3 id="因子分析总结">因子分析总结</h3>
-<ol>
-<li>根据上面的 EM 的过程，要对样本 X 进行因子分析，只需知道要分解的因子数（z 的维度）即可。通过 EM，我们能够得到转换矩阵Λ和误差协方差Ψ。<br><img src="/img/1402646963645.png" alt=""></li>
-<li>因子分析(factor  analysis)是一种数据简化的技术。原始的变量是可观测的显在变量，而假想变量是不可观测的潜在变量，称为因子。</li>
-<li>因子分析与回归分析不同，因子分析中的因子是一个比较抽象的概念，而回归因子有非常明确的实际意义</li>
-<li>主成分分析分析与因子分析也有不同，主成分分析仅仅是变量变换，而因子分析需要构造因子模型。<blockquote>
-<p><strong>主成分分析</strong>:原始变量的线性组合表示新的综合变量，即主成分；<br><strong>因子分析</strong>：潜在的假想变量和随机影响变量的线性组合表示原始变量。</p>
-</blockquote>
-</li>
-</ol>
+<p>三角形要满足的条件为：任意两边之和大于第三边，任意两边之和小于第三边。<br>故得出满足条件的面积如下：<br>①   x+y &gt; 1-x-y<br>②   x-y  &lt; 1-x-y</p>
+<p>①   1-y  &gt; y<br>②   2x+y-1 &lt; y</p>
+<p>①   1-x  &gt; x<br>②   2y+x-1 &lt; x</p>
+<p>可以计算出来面积大小为1/8<br>故概率为1/4</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -178,7 +116,7 @@ z被">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/ML/">ML</a>
+  <span></span> <a href="/tags/面试/">面试</a>
   </div>
 
 
@@ -216,19 +154,11 @@ z被">
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/06/13/机器学习14--pca主成分分析/" title="机器学习14--PCA主成分分析">
-  <strong>上一篇：</strong><br/>
-  <span>
-  机器学习14--PCA主成分分析</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/06/12/用latex模版写简历(windows)/"  title="用LaTex模版写简历(Windows)">
+<a href="/2014/06/14/机器学习17--增强学习——拟合的值迭代法（fitted-value-iterator）/"  title="机器学习17--增强学习——拟合的值迭代法（fitted value iterator）">
  <strong>下一篇：</strong><br/> 
- <span>用LaTex模版写简历(Windows)
+ <span>机器学习17--增强学习——拟合的值迭代法（fitted value iterator）
 </span>
 </a>
 </div>
@@ -246,7 +176,7 @@ z被">
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器学习13—EM算法—应用到三个模型：_1,2,3因子分析模型"><span class="toc-number">1.</span> <span class="toc-text">机器学习13—EM算法—应用到三个模型： 1,2,3因子分析模型</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#边缘和条件概率分布"><span class="toc-number">1.1.</span> <span class="toc-text">边缘和条件概率分布</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析模型"><span class="toc-number">1.1.1.</span> <span class="toc-text">因子分析模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析的EM估计"><span class="toc-number">1.1.2.</span> <span class="toc-text">因子分析的EM估计</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#总体步骤："><span class="toc-number">1.1.2.1.</span> <span class="toc-text">总体步骤：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#详细步骤"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">详细步骤</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#因子分析总结"><span class="toc-number">1.1.3.</span> <span class="toc-text">因子分析总结</span></a></li></ol>
+ 
  
   </div>
 
