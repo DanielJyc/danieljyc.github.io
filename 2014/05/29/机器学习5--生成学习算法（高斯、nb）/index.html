@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>机器学习5--生成学习算法（高斯、NB） | DanielJyc&#39;s blog</title>
+    <title>机器学习5--生成学习算法(高斯判别分析GDA和朴素贝叶斯NB) | DanielJyc&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="DanielJyc">
@@ -13,13 +13,34 @@
 说明：
 
 m为样本数目，i为第i个样本数目；
-joint likelihood ：联合似然估计判别学习算法和生成学习算法的区别：">
+joint likelihood ：联合似然估计判别学习算法和生成学习算法的区别：
+
+
+
+
+
+算法
+Learn
+说明
+概率类型
+
+
+
+
+判别学习算法
+$P(y/x)$
+特征x下，输出y的概率
+先验概率（经验为x）
+
+
+生成学习算法
+$P(x">
     
     
     
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="DanielJycheng" />
-    <meta name="twitter:title" content="机器学习5--生成学习算法（高斯、NB） | DanielJyc&#39;s blog" />
+    <meta name="twitter:title" content="机器学习5--生成学习算法(高斯判别分析GDA和朴素贝叶斯NB) | DanielJyc&#39;s blog" />
       
     
     
@@ -77,7 +98,7 @@ joint likelihood ：联合似然估计判别学习算法和生成学习算法的
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/05/29/机器学习5--生成学习算法（高斯、nb）/" title="机器学习5--生成学习算法（高斯、NB）" itemprop="url">机器学习5--生成学习算法（高斯、NB）</a>
+      <a href="/2014/05/29/机器学习5--生成学习算法（高斯、nb）/" title="机器学习5--生成学习算法(高斯判别分析GDA和朴素贝叶斯NB)" itemprop="url">机器学习5--生成学习算法(高斯判别分析GDA和朴素贝叶斯NB)</a>
   </h1>
   <p class="article-author">By
        
@@ -103,10 +124,34 @@ joint likelihood ：联合似然估计判别学习算法和生成学习算法的
 <ul>
 <li>m为样本数目，i为第i个样本数目；</li>
 <li>joint likelihood ：联合似然估计<h2 id="判别学习算法和生成学习算法的区别：">判别学习算法和生成学习算法的区别：</h2>
-<a id="more"></a><br>| 算法 | Learn| 说明 |概率类型<br>| :———— | ————:| :———: | :———: |<br>| 判别学习算法 | $P(y/x)$ | 特征x下，输出y的概率 |先验概率（经验为x）<br>| 生成学习算法 | $P(x/y)和P(y)$ | 在模型y（为良性肿瘤）下，特征x发生的概率 |后验概率（投‘果’探‘因’）——条件概率<h2 id="第一个生成学习算法：GDA（高斯判别分析）">第一个生成学习算法：GDA（高斯判别分析）</h2>
-<h3 id="特点"><strong>特点</strong></h3>
 </li>
 </ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">算法</th>
+<th style="text-align:right">Learn</th>
+<th style="text-align:center">说明</th>
+<th style="text-align:center">概率类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">判别学习算法</td>
+<td style="text-align:right">$P(y/x)$</td>
+<td style="text-align:center">特征x下，输出y的概率</td>
+<td style="text-align:center">先验概率（经验为x）</td>
+</tr>
+<tr>
+<td style="text-align:left">生成学习算法</td>
+<td style="text-align:right">$P(x/y)和P(y)$</td>
+<td style="text-align:center">在模型y（为良性肿瘤）下，特征x发生的概率</td>
+<td style="text-align:center">后验概率（投‘果’探‘因’）——条件概率</td>
+</tr>
+</tbody>
+</table>
+<h2 id="第一个生成学习算法：GDA（高斯判别分析）">第一个生成学习算法：GDA（高斯判别分析）</h2>
+<h3 id="特点"><strong>特点</strong></h3>
 <ul>
 <li>假设输入x连续，服从多元高斯分布。</li>
 <li>本例中y服从伯努利分布</li>
@@ -208,9 +253,9 @@ joint likelihood ：联合似然估计判别学习算法和生成学习算法的
 
 
 <div class="next">
-<a href="/2014/05/28/机器学习4--生成学习算法(高斯判别分析gda和朴素贝叶斯nb)/"  title="机器学习4--生成学习算法(高斯判别分析GDA和朴素贝叶斯NB)">
+<a href="/2014/05/22/数据预处理--分箱（平滑）和归一化/"  title="数据预处理--分箱（平滑）和归一化">
  <strong>下一篇：</strong><br/> 
- <span>机器学习4--生成学习算法(高斯判别分析GDA和朴素贝叶斯NB)
+ <span>数据预处理--分箱（平滑）和归一化
 </span>
 </a>
 </div>
@@ -243,15 +288,15 @@ joint likelihood ：联合似然估计判别学习算法和生成学习算法的
 	<p class="asidetitle">标签</p>
 		<ul class="clearfix">
 		
-			<li><a href="/tags/ML/" title="ML">ML<sup>19</sup></a></li>
+			<li><a href="/tags/ML/" title="ML">ML<sup>18</sup></a></li>
 		
 			<li><a href="/tags/LaTex/" title="LaTex">LaTex<sup>2</sup></a></li>
 		
 			<li><a href="/tags/阿里巴巴大数据竞赛/" title="阿里巴巴大数据竞赛">阿里巴巴大数据竞赛<sup>1</sup></a></li>
 		
-			<li><a href="/tags/找工作经历/" title="找工作经历">找工作经历<sup>1</sup></a></li>
-		
 			<li><a href="/tags/学习相关/" title="学习相关">学习相关<sup>1</sup></a></li>
+		
+			<li><a href="/tags/找工作经历/" title="找工作经历">找工作经历<sup>1</sup></a></li>
 		
 			<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
 		
